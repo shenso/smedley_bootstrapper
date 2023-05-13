@@ -6,10 +6,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
+using Smedley.Bootstrapper.Commands;
 using Smedley.Bootstrapper.Exceptions;
 using Smedley.Bootstrapper.Injector;
-using Smedley.Bootstrapper.IPC;
 
 namespace Smedley.Bootstrapper.Models
 {
@@ -29,11 +30,11 @@ namespace Smedley.Bootstrapper.Models
         private SessionStatus _status;
         private object _lock = new object();
 
+        private Injector.Injector _injector;
+
         public BootstrapSettings Settings { get; }
 
         public PROCESS_INFORMATION ProcessInfo { get; }
-
-        public RelayPipeServer RelayPipe { get; }
 
         public SessionStatus Status {
             get
@@ -86,29 +87,87 @@ namespace Smedley.Bootstrapper.Models
 
             ProcessInfo = procInfo;
             Settings = settings;
-            RelayPipe = new RelayPipeServer();
-            RelayPipe.RelayReceived += OnRelayReceived;
+            _injector = new Injector.Injector(procInfo.hProcess);
 
             _status = SessionStatus.Started;
 
-            Task.Run(() => RelayPipe.Listen());
+            //Task.Run(() => CommandPipe.Listen());
             Task.Run(() => WaitForProcessExit());
         }
 
         public void InjectKernel()
         {
-            var injector = new Injector.Injector(ProcessInfo.hProcess);
             Status = SessionStatus.WaitingForRelay;
-            injector.Inject(Settings.KernelPath);
+            _injector.Inject(Settings.KernelPath);
         }
 
-        private void OnRelayReceived(object? sender, EventArgs e)
+        private IntPtr AllocPluginList()
         {
-            if (Status != SessionStatus.WaitingForRelay)
+            IntPtr root = IntPtr.Zero;
+            IntPtr last = IntPtr.Zero;
+
+            foreach(Plugin plugin in Settings.SelectedPlugins)
             {
-                throw new InvalidOperationException("unexpected relay received!");
+                var modPathBytes = Encoding.ASCII.GetBytes(plugin.ModulePath);
+                var modPathBuf = Win32.VirtualAllocEx(
+                    ProcessInfo.hProcess, IntPtr.Zero, (uint) modPathBytes.Length, (uint) AllocationType.Commit, (uint) MemoryProtection.ReadWrite);
+                Win32.WriteProcessMemory(ProcessInfo.hProcess, modPathBuf, modPathBytes, modPathBytes.Length, out _);
+
+                var nextAddr = IntPtr.Zero;
+                var modPathAddrBytes = BitConverter.GetBytes(modPathBuf.ToInt32());
+                var nextAddrBytes = BitConverter.GetBytes(nextAddr.ToInt32());
+
+                var bytes = modPathAddrBytes.Concat(nextAddrBytes).ToArray();
+                var buf = Win32.VirtualAllocEx(ProcessInfo.hProcess, IntPtr.Zero, (uint)bytes.Length, (uint)AllocationType.Commit, (uint)MemoryProtection.ReadWrite);
+                Win32.WriteProcessMemory(ProcessInfo.hProcess, buf, bytes, bytes.Length, out _);
+                if (last != IntPtr.Zero)
+                {
+                    Win32.WriteProcessMemory(ProcessInfo.hProcess, (IntPtr)((uint)last + 4), BitConverter.GetBytes(buf.ToInt32()), 4, out _);
+                }
+
+                last = buf;
+                if (root == IntPtr.Zero)
+                {
+                    root = buf;
+                }
             }
 
+            return root;
+        }
+
+        public void LoadPlugins()
+        {
+            Status = SessionStatus.LoadingPlugins;
+            Trace.WriteLine("Loading plugins!");
+            foreach (Plugin plugin in Settings.SelectedPlugins)
+            {
+                _injector.Inject(plugin.ModulePath);
+                Trace.WriteLine("Plugin " + plugin.ModulePath + " injected!");
+            }
+
+            IntPtr kernelBase = Win32.GetModuleBaseEx(ProcessInfo.dwProcessId, "smedley_kernel.dll");
+            Trace.WriteLine("Module base: " + kernelBase);
+            IntPtr subroutine = Win32.GetProcAddressEx(ProcessInfo.hProcess, kernelBase, "LoadPlugins");
+            if (subroutine != IntPtr.Zero)
+            {
+                IntPtr loadedPlugins = AllocPluginList();
+                Trace.WriteLine("allocated plugin list: " + loadedPlugins);
+
+                Trace.WriteLine("LoadPlugins: " + subroutine);
+                var loadPluginsThread = Win32.CreateRemoteThread(ProcessInfo.hProcess, IntPtr.Zero, 0, subroutine, loadedPlugins, 0, out IntPtr lpThreadId);
+                Trace.WriteLine("Load plugins thread id: " + lpThreadId);
+                Win32.WaitForSingleObject(loadPluginsThread, Win32.INFINITE);
+            }
+            else
+            {
+                Trace.WriteLine("failed to find loadplugins func");
+            }
+
+            ResumeGameThread();
+        }
+
+        private void ResumeGameThread()
+        {
             Win32.ResumeThread(ProcessInfo.hThread);
             Status = SessionStatus.ProcessRunning;
         }

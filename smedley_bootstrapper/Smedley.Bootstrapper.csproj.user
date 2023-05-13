@@ -10,7 +10,13 @@
     <Compile Update="Views\BootstrapTargetView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\PluginCheckboxList.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\PathTextBox.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\PluginView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -21,7 +27,13 @@
     <Page Update="Views\BootstrapTargetView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\PluginCheckboxList.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\PathTextBox.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\PluginView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

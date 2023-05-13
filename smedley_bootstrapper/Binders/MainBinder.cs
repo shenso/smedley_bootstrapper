@@ -23,6 +23,8 @@ namespace Smedley.Bootstrapper.Binders
 
         public Binder TargetViewBinder { get; }
 
+        public Binder PluginViewBinder { get;  }
+
         public Session? Session
         {
             get { return _session;  }
@@ -67,6 +69,7 @@ namespace Smedley.Bootstrapper.Binders
 
             Settings = new BootstrapSettings(gameDir, kernelPath);
             TargetViewBinder = new BootstrapTargetViewBinder(Settings);
+            PluginViewBinder = new PluginViewBinder(Settings);
 
             BootSession = new BootCommand(this);
             BootSession.CanExecuteChanged += (object sender, EventArgs e) =>

@@ -11,7 +11,6 @@ using System.Diagnostics;
 
 using Smedley.Bootstrapper.Binders;
 using Smedley.Bootstrapper.Models;
-using Smedley.Bootstrapper.IPC;
 
 namespace Smedley.Bootstrapper.Commands
 {
@@ -77,6 +76,7 @@ namespace Smedley.Bootstrapper.Commands
                 _binder.Session = new Session(_binder.Settings);
                 _binder.Session.SessionStatusChange += OnSessionStatusChange;
                 _binder.Session.InjectKernel();
+                _binder.Session.LoadPlugins();
 
                 if (_canExecute)
                 {

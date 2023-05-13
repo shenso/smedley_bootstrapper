@@ -26,8 +26,10 @@
 
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock Text="Mods" />
+                    <TextBlock Text="Plugins" />
                 </TabItem.Header>
+
+                <views:PluginView DataContext="{Binding PluginViewBinder}" />
             </TabItem>
 
             <TabItem>

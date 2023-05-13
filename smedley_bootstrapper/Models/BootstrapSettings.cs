@@ -13,14 +13,14 @@ namespace Smedley.Bootstrapper.Models
 
         public string KernelPath { get; set; }
 
-        public List<CoreMod> CoreMods { get; }
+        public List<Plugin> SelectedPlugins { get; }
 
         public BootstrapSettings(string gameDir, string kernelPath)
         {
             GameDirectoryPath = gameDir;
             KernelPath = kernelPath;
 
-            CoreMods = new List<CoreMod>(); 
+            SelectedPlugins = new List<Plugin>(); 
         }
 
         public static string GetDefaultGameDirectory()
