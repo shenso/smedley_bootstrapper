@@ -18,9 +18,9 @@ namespace Smedley.Bootstrapper.Views
     /// <summary>
     /// Interaction logic for CheckboxListView.xaml
     /// </summary>
-    public partial class PluginCheckboxList : UserControl
+    public partial class CheckboxList : UserControl
     {
-        public PluginCheckboxList()
+        public CheckboxList()
         {
             InitializeComponent();
         }

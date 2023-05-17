@@ -10,10 +10,10 @@ namespace Smedley.Bootstrapper.Models
     public class BootstrapSettings
     {
         public string GameDirectoryPath { get; set; }
-
         public string KernelPath { get; set; }
 
         public List<Plugin> SelectedPlugins { get; }
+        public List<Mod> SelectedMods { get; }
 
         public BootstrapSettings(string gameDir, string kernelPath)
         {
@@ -21,6 +21,23 @@ namespace Smedley.Bootstrapper.Models
             KernelPath = kernelPath;
 
             SelectedPlugins = new List<Plugin>(); 
+            SelectedMods = new List<Mod>(); 
+        }
+
+        public string GetCommandLine()
+        {
+            StringBuilder sb = new();
+            sb.Append(GameDirectoryPath);
+            sb.Append("\\v2game.exe");
+
+            foreach (Mod mod in SelectedMods)
+            {
+                var filename = Path.GetFileName(mod.FilePath);
+                sb.Append(" -mod=mod/");
+                sb.Append(filename);
+            }
+
+            return sb.ToString();
         }
 
         public static string GetDefaultGameDirectory()

@@ -70,7 +70,7 @@ namespace Smedley.Bootstrapper.Models
 
             var success = Win32.CreateProcess(
                 appName,
-                appName, // TODO: support mod selection
+                settings.GetCommandLine(),
                 ref pSec,
                 ref tSec,
                 true,
