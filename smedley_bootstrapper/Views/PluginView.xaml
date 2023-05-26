@@ -12,9 +12,13 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <local:CheckboxList DataContext="{Binding PluginCheckboxListBinder}"
-                                  Margin="20,10,5,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="0" />
-        <local:CheckboxList DataContext="{Binding ModCheckboxListBinder}"
-                                  Margin="5,10,20,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="1" />
+        <GroupBox Header="Smedley Plugins:" Grid.Column="0" Margin="20,0">
+            <local:CheckboxList DataContext="{Binding PluginCheckboxListBinder}"
+                                Margin="10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        </GroupBox>
+        <GroupBox Header="Victoria 2 Mods:" Grid.Column="1" Margin="20,0">
+            <local:CheckboxList DataContext="{Binding ModCheckboxListBinder}"
+                                Margin="10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        </GroupBox>
     </Grid>
 </UserControl>

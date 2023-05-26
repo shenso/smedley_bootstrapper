@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Smedley.Bootstrapper"
         xmlns:views="clr-namespace:Smedley.Bootstrapper.Views" xmlns:binders="clr-namespace:Smedley.Bootstrapper.Binders"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" MinHeight="400" MinWidth="700">
+        Title="Smedley Launcher" Height="450" Width="800" MinHeight="400" MinWidth="700">
     <Window.DataContext>
         <binders:MainBinder />
     </Window.DataContext>
@@ -17,33 +17,7 @@
             <RowDefinition Height="80" />
         </Grid.RowDefinitions>
 
-        <TabControl Grid.Row="0">
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Text="Changelog" />
-                </TabItem.Header>
-            </TabItem>
-
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Text="Plugins" />
-                </TabItem.Header>
-
-                <views:PluginView DataContext="{Binding PluginViewBinder}" />
-            </TabItem>
-
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Text="Session" />
-                </TabItem.Header>
-            </TabItem>
-
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Text="Settings" />
-                </TabItem.Header>
-            </TabItem>
-        </TabControl>
+        <views:PluginView DataContext="{Binding PluginViewBinder}" Grid.Row="0" />
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
