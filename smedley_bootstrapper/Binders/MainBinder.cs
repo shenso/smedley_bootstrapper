@@ -61,7 +61,7 @@ namespace Smedley.Bootstrapper.Binders
         public MainBinder()
         {
             var gameDir = BootstrapSettings.GetDefaultGameDirectory();
-            var kernelPath = gameDir + "\\smedley_kernel.dll";
+            var kernelPath = Path.Join(gameDir, "smedley_kernel.dll");
             if (!File.Exists(kernelPath))
             {
                 kernelPath = "";

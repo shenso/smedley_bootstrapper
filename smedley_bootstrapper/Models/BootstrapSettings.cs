@@ -27,9 +27,7 @@ namespace Smedley.Bootstrapper.Models
         public string GetCommandLine()
         {
             StringBuilder sb = new();
-            sb.Append(GameDirectoryPath);
-            sb.Append("\\v2game.exe");
-
+            sb.Append(Path.Join(GameDirectoryPath, "v2game.exe"));
             foreach (Mod mod in SelectedMods)
             {
                 var filename = Path.GetFileName(mod.FilePath);
@@ -42,11 +40,19 @@ namespace Smedley.Bootstrapper.Models
 
         public static string GetDefaultGameDirectory()
         {
-            var path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Victoria 2";
+            var path = Path.GetFullPath(".");
+            if (File.Exists(Path.Join(path, "v2game.exe")))
+            {
+                return path;
+            }
+
+            var programsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            path = Path.Join(programsPath, "Steam", "steamapps", "common", "Victoria 2");
             if (Directory.Exists(path))
             {
                 return path;
             }
+
 
             return "";
         }
