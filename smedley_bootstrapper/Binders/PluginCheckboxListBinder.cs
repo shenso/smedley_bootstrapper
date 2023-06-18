@@ -27,9 +27,9 @@ namespace Smedley.Bootstrapper.Binders
         {
             if (Directory.Exists(dirname))
             {
-                foreach (string filename in Directory.GetFiles(dirname, "*.dll"))
+                foreach (string filename in Directory.GetFiles(dirname, "*.toml"))
                 {
-                    var item = new PluginCheckboxItemBinder(new Plugin(filename));
+                    var item = new PluginCheckboxItemBinder(Plugin.ReadDefinition(filename));
                     item.PropertyChanged += OnItemPropertyChanged;
                     yield return item;
                 }

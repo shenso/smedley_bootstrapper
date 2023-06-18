@@ -28,10 +28,18 @@ namespace Smedley.Bootstrapper.Models
         {
             StringBuilder sb = new();
             sb.Append(Path.Join(GameDirectoryPath, "v2game.exe"));
+
             foreach (Mod mod in SelectedMods)
             {
                 var filename = Path.GetFileName(mod.FilePath);
                 sb.Append(" -mod=mod/");
+                sb.Append(filename);
+            }
+
+            foreach (Plugin plugin in SelectedPlugins)
+            {
+                var filename = Path.GetFileName(plugin.DefinitionPath);
+                sb.Append(" -plugin=plugins/");
                 sb.Append(filename);
             }
 

@@ -101,40 +101,6 @@ namespace Smedley.Bootstrapper.Models
             _injector.Inject(Settings.KernelPath);
         }
 
-        private IntPtr AllocPluginList()
-        {
-            IntPtr root = IntPtr.Zero;
-            IntPtr last = IntPtr.Zero;
-
-            foreach(Plugin plugin in Settings.SelectedPlugins)
-            {
-                var modPathBytes = Encoding.ASCII.GetBytes(plugin.ModulePath);
-                var modPathBuf = Win32.VirtualAllocEx(
-                    ProcessInfo.hProcess, IntPtr.Zero, (uint) modPathBytes.Length, (uint) AllocationType.Commit, (uint) MemoryProtection.ReadWrite);
-                Win32.WriteProcessMemory(ProcessInfo.hProcess, modPathBuf, modPathBytes, modPathBytes.Length, out _);
-
-                var nextAddr = IntPtr.Zero;
-                var modPathAddrBytes = BitConverter.GetBytes(modPathBuf.ToInt32());
-                var nextAddrBytes = BitConverter.GetBytes(nextAddr.ToInt32());
-
-                var bytes = modPathAddrBytes.Concat(nextAddrBytes).ToArray();
-                var buf = Win32.VirtualAllocEx(ProcessInfo.hProcess, IntPtr.Zero, (uint)bytes.Length, (uint)AllocationType.Commit, (uint)MemoryProtection.ReadWrite);
-                Win32.WriteProcessMemory(ProcessInfo.hProcess, buf, bytes, bytes.Length, out _);
-                if (last != IntPtr.Zero)
-                {
-                    Win32.WriteProcessMemory(ProcessInfo.hProcess, (IntPtr)((uint)last + 4), BitConverter.GetBytes(buf.ToInt32()), 4, out _);
-                }
-
-                last = buf;
-                if (root == IntPtr.Zero)
-                {
-                    root = buf;
-                }
-            }
-
-            return root;
-        }
-
         public void LoadPlugins()
         {
             Status = SessionStatus.LoadingPlugins;
@@ -150,11 +116,8 @@ namespace Smedley.Bootstrapper.Models
             IntPtr subroutine = Win32.GetProcAddressEx(ProcessInfo.hProcess, kernelBase, "LoadPlugins");
             if (subroutine != IntPtr.Zero)
             {
-                IntPtr loadedPlugins = AllocPluginList();
-                Trace.WriteLine("allocated plugin list: " + loadedPlugins);
-
                 Trace.WriteLine("LoadPlugins: " + subroutine);
-                var loadPluginsThread = Win32.CreateRemoteThread(ProcessInfo.hProcess, IntPtr.Zero, 0, subroutine, loadedPlugins, 0, out IntPtr lpThreadId);
+                var loadPluginsThread = Win32.CreateRemoteThread(ProcessInfo.hProcess, IntPtr.Zero, 0, subroutine, IntPtr.Zero, 0, out IntPtr lpThreadId);
                 Trace.WriteLine("Load plugins thread id: " + lpThreadId);
                 Win32.WaitForSingleObject(loadPluginsThread, Win32.INFINITE);
             }

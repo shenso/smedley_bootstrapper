@@ -725,7 +725,6 @@ namespace Smedley.Bootstrapper
 
                 buf = buf.TakeWhile(b => b != 0x0).ToArray();
                 string name = Encoding.ASCII.GetString(buf);
-                Trace.WriteLine("symbol name: " + name);
                 if (name == funcName)
                 {
                     IntPtr fn = IntPtr.Zero;

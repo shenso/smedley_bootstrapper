@@ -14,13 +14,12 @@ namespace Smedley.Bootstrapper.Binders
         private bool _checked;
 
         public Plugin Plugin { get; }
-        public string Name { get;  }
+        public string Name { get { return Plugin.Name; }  }
         public bool IsChecked { get { return _checked; } set { SetProperty(ref _checked, value); } }
 
         public PluginCheckboxItemBinder(Plugin plugin, bool isChecked = false)
         {
             Plugin = plugin;
-            Name = Path.GetFileName(plugin.ModulePath);
             _checked = isChecked;
         }
     }
