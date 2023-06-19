@@ -14,7 +14,7 @@ namespace Smedley.Bootstrapper.Models
         [IgnoreDataMember]
         public string DefinitionPath { get; set; }
         [DataMember(Name = "module")]
-        public string ModulePath { get; set; }
+        public string ModuleName { get; set; }
 
         [DataMember(Name = "id")]
         public string ID { get; set; }

@@ -107,8 +107,8 @@ namespace Smedley.Bootstrapper.Models
             Trace.WriteLine("Loading plugins!");
             foreach (Plugin plugin in Settings.SelectedPlugins)
             {
-                _injector.Inject(plugin.ModulePath);
-                Trace.WriteLine("Plugin " + plugin.ModulePath + " injected!");
+                _injector.Inject(Path.Join(Settings.GameDirectoryPath, "plugins", plugin.ModuleName));
+                Trace.WriteLine("Plugin " + plugin.ModuleName + " injected!");
             }
 
             IntPtr kernelBase = Win32.GetModuleBaseEx(ProcessInfo.dwProcessId, "smedley_kernel.dll");
