@@ -17,7 +17,14 @@
             <RowDefinition Height="80" />
         </Grid.RowDefinitions>
 
-        <views:PluginView DataContext="{Binding PluginViewBinder}" Grid.Row="0" />
+        <TabControl Grid.Row="0">
+            <TabItem Header="Plugins">
+                <views:PluginView DataContext="{Binding PluginViewBinder}" />
+            </TabItem>
+            <TabItem Header="Settings">
+                <views:SettingsView DataContext="{Binding SettingsBinder}" />
+            </TabItem>
+        </TabControl>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -27,7 +34,7 @@
 
             <views:BootstrapTargetView Margin="20,8" DataContext="{Binding TargetViewBinder}" />
 
-            <Button Margin="0,0,40,0" Grid.Column="1" HorizontalAlignment="Right" Height="40" Width="140" Content="Launch Game" Command="{Binding BootSession}" IsEnabled="{Binding CanBootSession}"></Button>
+            <views:BootButton Margin="0,0,40,0" Grid.Column="1" HorizontalAlignment="Right" Height="40" Width="140" DataContext="{Binding BootButtonBinder}" />
         </Grid>
 
     </Grid>

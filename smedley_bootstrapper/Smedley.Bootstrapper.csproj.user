@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\BootButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\BootstrapTargetView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -19,9 +22,15 @@
     <Compile Update="Views\PluginView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\SettingsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\BootButton.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\BootstrapTargetView.xaml">
@@ -34,6 +43,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\PluginView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

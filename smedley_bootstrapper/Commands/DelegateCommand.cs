@@ -11,11 +11,11 @@ namespace Smedley.Bootstrapper.Commands
     public class DelegateCommand : ICommand
     {
         private Action<object?> _action;
-        private Predicate<object>? _predicate;
+        private Predicate<object?>? _predicate;
 
         public event EventHandler? CanExecuteChanged;
 
-        public DelegateCommand(Action<object?> action, Predicate<object>? predicate = null)
+        public DelegateCommand(Action<object?> action, Predicate<object?>? predicate = null)
         {
             _action = action;
             _predicate = predicate;

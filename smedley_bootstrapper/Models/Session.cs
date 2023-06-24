@@ -17,8 +17,8 @@ namespace Smedley.Bootstrapper.Models
     public enum SessionStatus
     {
         Started,
-        WaitingForRelay,
         LoadingPlugins,
+        PendingThreadResume,
         ProcessRunning,
         ProcessClosed,
     }
@@ -97,7 +97,6 @@ namespace Smedley.Bootstrapper.Models
 
         public void InjectKernel()
         {
-            Status = SessionStatus.WaitingForRelay;
             _injector.Inject(Settings.KernelPath);
         }
 
@@ -126,11 +125,16 @@ namespace Smedley.Bootstrapper.Models
                 Trace.WriteLine("failed to find loadplugins func");
             }
 
-            ResumeGameThread();
+            Status = SessionStatus.PendingThreadResume;
+            if (Settings.ResumeGameThreadAfterLoad)
+            {
+                ResumeGameThread();
+            }
         }
 
-        private void ResumeGameThread()
+        public void ResumeGameThread()
         {
+            // TODO: assert status
             Win32.ResumeThread(ProcessInfo.hThread);
             Status = SessionStatus.ProcessRunning;
         }

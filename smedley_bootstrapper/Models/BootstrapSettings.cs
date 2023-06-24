@@ -15,13 +15,17 @@ namespace Smedley.Bootstrapper.Models
         public List<Plugin> SelectedPlugins { get; }
         public List<Mod> SelectedMods { get; }
 
+        public bool ResumeGameThreadAfterLoad { get; set; }
+
         public BootstrapSettings(string gameDir, string kernelPath)
         {
             GameDirectoryPath = gameDir;
             KernelPath = kernelPath;
 
             SelectedPlugins = new List<Plugin>(); 
-            SelectedMods = new List<Mod>(); 
+            SelectedMods = new List<Mod>();
+
+            ResumeGameThreadAfterLoad = true;
         }
 
         public string GetCommandLine()
