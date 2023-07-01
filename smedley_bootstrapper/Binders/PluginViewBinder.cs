@@ -11,13 +11,19 @@ namespace Smedley.Bootstrapper.Binders
 {
     public class PluginViewBinder : Binder
     {
-        public Binder PluginCheckboxListBinder { get; }
-        public Binder ModCheckboxListBinder { get; }
+        public PluginCheckboxListBinder PluginCheckboxListBinder { get; }
+        public ModCheckboxListBinder ModCheckboxListBinder { get; }
 
         public PluginViewBinder(BootstrapSettings settings)
         {
             PluginCheckboxListBinder = new PluginCheckboxListBinder(settings);
             ModCheckboxListBinder = new ModCheckboxListBinder(settings);
+        }
+
+        public void Refresh()
+        {
+            PluginCheckboxListBinder.Refresh();
+            ModCheckboxListBinder.Refresh();
         }
     }
 }

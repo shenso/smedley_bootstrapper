@@ -38,6 +38,15 @@ namespace Smedley.Bootstrapper.Binders
             }
         }
 
+        public void Refresh()
+        {
+            foreach (var item in CheckboxItems)
+            {
+                ((ModCheckboxItemBinder) item).PropertyChanged -= OnItemPropertyChanged;
+            }
+            CheckboxItems = new ObservableCollection<object>(SeedItems(_settings.GameDirectoryPath + "\\mod").ToList());
+        }
+
         private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsChecked" && sender != null)

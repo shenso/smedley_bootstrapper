@@ -19,7 +19,7 @@ namespace Smedley.Bootstrapper.Binders
 
         public Binder TargetViewBinder { get; }
 
-        public Binder PluginViewBinder { get;  }
+        public PluginViewBinder PluginViewBinder { get;  }
         
         public Binder SettingsBinder { get; }
 
@@ -35,10 +35,19 @@ namespace Smedley.Bootstrapper.Binders
             }
 
             Settings = new BootstrapSettings(gameDir, kernelPath);
-            TargetViewBinder = new BootstrapTargetViewBinder(Settings);
+
+            var targetViewBinder = new BootstrapTargetViewBinder(Settings);
+            TargetViewBinder = targetViewBinder;
             PluginViewBinder = new PluginViewBinder(Settings);
             SettingsBinder = new SettingsBinder(Settings);
             BootButtonBinder = new BootButtonBinder(Settings);
+
+            targetViewBinder.GameDirectoryChanged += OnGameDirectoryChanged;
+        }
+
+        private void OnGameDirectoryChanged()
+        {
+            PluginViewBinder.Refresh();
         }
     }
 }

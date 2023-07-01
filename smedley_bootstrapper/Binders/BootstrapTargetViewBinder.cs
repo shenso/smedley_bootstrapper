@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,10 @@ namespace Smedley.Bootstrapper.Binders
     public class BootstrapTargetViewBinder : Binder
     {
         public BootstrapSettings BootstrapSettings { get; }
-        public Binder GameDirBinder { get; }
-        public Binder KernelPathBinder { get; }
+        public PathTextBoxBinder GameDirBinder { get; }
+        public PathTextBoxBinder KernelPathBinder { get; }
+
+        public event Action? GameDirectoryChanged;
 
         public BootstrapTargetViewBinder(BootstrapSettings settings)
         {
@@ -28,7 +31,15 @@ namespace Smedley.Bootstrapper.Binders
         {
             if (e.PropertyName == "Path" && sender != null)
             {
-                BootstrapSettings.GameDirectoryPath = ((PathTextBoxBinder) sender).Path;
+                BootstrapSettings.GameDirectoryPath = ((PathTextBoxBinder)sender).Path;
+
+                var gameDir = BootstrapSettings.GameDirectoryPath;
+                var kernelPath = Path.Join(gameDir, "smedley_kernel.dll");
+                if (File.Exists(kernelPath))
+                {
+                    KernelPathBinder.Path = kernelPath;
+                }
+                GameDirectoryChanged?.Invoke();
             }
         }
 
